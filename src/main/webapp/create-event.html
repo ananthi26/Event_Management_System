@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Event</title>
+  <link rel="stylesheet" href="style/styles.css">
+</head>
+<body>
+<nav class="top-nav">
+    <div class="nav-title">Faculty Dashboard</div>
+    <div class="nav-links">
+      <a href="faculty-dashboard.html">Logout</a>
+    </div>
+  </nav>
+  <div class="form-container">
+    <h2>Create Event</h2>
+    <form method="post" action="EventServlet">
+      <label for="eventName">Event Name</label>
+      <input type="text" name="eventName" required>
+
+      <label for="description">Description</label>
+      <textarea name="description" required></textarea>
+
+      <label for="startDateTime">Start Date & Time</label>
+      <input type="datetime-local" name="startDateTime" required>
+
+      <label for="endDateTime">End Date & Time</label>
+      <input type="datetime-local" name="endDateTime" required>
+
+      <label for="venue">Venue</label>
+      <input type="text" name="venue" required>
+
+      <label for="eventType">Event Type</label>
+      <select name="eventType" required>
+        <option>Seminar</option>
+        <option>Workshop</option>
+        <option>Cultural</option>
+        <option>Technical</option>
+      </select>
+
+      <label for="organizer">Organizer</label>
+      <input type="text" name="organizer" required>
+
+      <label for="maxParticipants">Max Participants</label>
+      <input type="number" name="maxParticipants" required>
+
+      <button type="submit">Submit Event</button>
+    </form>
+  </div>
+</body>
+</html>

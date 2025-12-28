@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Event Scheduler</title>
+  <link rel="stylesheet" href="style/styles.css" />
+  <script>
+  window.onload = function() {
+    document.getElementById("loginForm").reset(); 
+    document.getElementById("email").value = "";   
+    document.getElementById("password").value = "";
+    document.getElementById("captcha").value = "";
+  };
+</script>
+  
+</head>
+<body>
+
+  <!-- Stylish Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-title">🎓 Event Scheduler</div>
+    <div class="nav-links">
+      <a href="faculty-login.html">Faculty Dashboard</a>
+      <a href="student-dashboard.html">Student Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm" method="post" action="Login">
+      <label for="email">Email</label>
+<input type="email" name="email" required
+       pattern="^[a-zA-Z0-9._%+-]+@srec\.ac\.in$"
+       title="Only SREC institutional emails are allowed" autocomplete="new-password"/>
+      
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required autocomplete="new-password" />
+
+      <label for="captcha-display">Captcha</label>
+      <div class="captcha-box">
+        <input type="text" id="captcha-display" disabled />
+        <button type="button" onclick="generateCaptcha()">⟳</button>
+      </div>
+
+      <label for="captcha">Enter Captcha</label>
+      <input type="text" id="captcha" required />
+     
+      <label for="role">Login as:</label>
+      <select name="role" id="role">
+      <option value="choose">Choose the option</option>
+        <option value="student">Student</option>
+        <option value="faculty">Faculty</option>
+      </select>
+
+      <div class="signup-link" style="text-align: center; margin-top: 10px;">
+        <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
