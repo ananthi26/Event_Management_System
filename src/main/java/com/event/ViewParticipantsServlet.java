@@ -62,7 +62,7 @@ public class ViewParticipantsServlet extends HttpServlet {
             }
 
         } catch (SQLException e) {
-            out.println("<tr><td colspan='2'>❌ Error: " + e.getMessage() + "</td></tr>");
+            out.println("<tr><td colspan='2'>Error: " + e.getMessage() + "</td></tr>");
         }
 
         out.println("</table>");

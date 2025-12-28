@@ -36,7 +36,7 @@ public class RegisterEventServlet extends HttpServlet {
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
-                out.write("❌ Already registered for this event.");
+                out.write("Already registered for this event.");
                 return;
             }
 
@@ -47,14 +47,14 @@ public class RegisterEventServlet extends HttpServlet {
 
             int rows = insertStmt.executeUpdate();
             if (rows > 0) {
-                out.write("✅ Registration successful!");
+                out.write("Registration successful!");
             } else {
-                out.write("❌ Registration failed.");
+                out.write("Registration failed.");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            out.write("❌ DB Error: " + e.getMessage());
+            out.write("DB Error: " + e.getMessage());
         }
     }
 }

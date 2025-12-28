@@ -29,29 +29,29 @@ public class SignupServlet extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
-        // ✅ Email domain validation
+      
         if (email == null || !email.endsWith("@srec.ac.in")) {
-            out.println("<script>alert('❌ Only @srec.ac.in emails are allowed!'); window.location='signup.html';</script>");
+            out.println("<script>alert('Only @srec.ac.in emails are allowed!'); window.location='signup.html';</script>");
             return;
         }
 
         try (Connection conn = DBConnection.getConnection()) {
             if (conn == null) {
-                out.println("<script>alert('❌ Database connection failed'); window.location='signup.html';</script>");
+                out.println("<script>alert('Database connection failed'); window.location='signup.html';</script>");
                 return;
             }
 
-            // Check if user already exists
+            
             String checkSql = "SELECT * FROM users WHERE email = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkSql);
             checkStmt.setString(1, email);
             ResultSet rs = checkStmt.executeQuery();
             if (rs.next()) {
-                out.println("<script>alert('❗ Email already registered'); window.location='signup.html';</script>");
+                out.println("<script>alert('Email already registered'); window.location='signup.html';</script>");
                 return;
             }
 
-            // Insert new user
+           
             String insertSql = "INSERT INTO users (email, password, logged_in) VALUES (?, ?, false)";
             PreparedStatement stmt = conn.prepareStatement(insertSql);
             stmt.setString(1, email);
@@ -59,14 +59,14 @@ public class SignupServlet extends HttpServlet {
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
-                out.println("<script>alert('✅ Registration successful!'); window.location='index.html';</script>");
+                out.println("<script>alert('Registration successful!'); window.location='index.html';</script>");
             } else {
-                out.println("<script>alert('❌ Registration failed.'); window.location='signup.html';</script>");
+                out.println("<script>alert('Registration failed.'); window.location='signup.html';</script>");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            out.println("<script>alert('❌ Error: " + e.getMessage() + "'); window.location='signup.html';</script>");
+            out.println("<script>alert('Error: " + e.getMessage() + "'); window.location='signup.html';</script>");
         }
     }
 }

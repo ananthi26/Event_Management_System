@@ -41,7 +41,7 @@ public class FacultyLoginServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                // ✅ Faculty authenticated
+                
                 HttpSession session = request.getSession();
                 session.setAttribute("role", "faculty");
                 session.setAttribute("email", email);

@@ -60,7 +60,7 @@ public class StudentEventsServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            out.println("❌ Error loading events: " + e.getMessage());
+            out.println("Error loading events: " + e.getMessage());
         }
     }
 }

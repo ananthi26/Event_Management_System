@@ -12,9 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
-
 @WebServlet("/Login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -46,16 +43,16 @@ public class LoginServlet extends HttpServlet {
                 String role = rs.getString("role");
 
                 if (isLoggedIn) {
-                    // User already logged in elsewhere
+                    
                     response.sendRedirect("index.html?msg=loggedin");
                 } else {
-                    // Mark user as logged in
+                    
                     PreparedStatement updateStmt = conn.prepareStatement(
                             "UPDATE users SET logged_in=true WHERE email=?");
                     updateStmt.setString(1, email);
                     updateStmt.executeUpdate();
 
-                    // Redirect to appropriate dashboard
+                    
                     if ("faculty".equalsIgnoreCase(role)) {
                         response.sendRedirect("FacultyDashboardServlet");
                     } else if ("student".equalsIgnoreCase(role)) {
@@ -65,7 +62,7 @@ public class LoginServlet extends HttpServlet {
                     }
                 }
             } else {
-                // Invalid credentials
+                
                 response.sendRedirect("index.html?msg=invalid");
             }
 

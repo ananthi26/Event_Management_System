@@ -51,7 +51,7 @@ public class UpcomingEventsServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            out.println("<p style='color:red;'>❌ Error loading events</p>");
+            out.println("<p style='color:red;'>Error loading events</p>");
         }
     }
 }

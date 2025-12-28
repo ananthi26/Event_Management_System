@@ -88,7 +88,7 @@ public class ManageEventsServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            out.println("❌ Database error: " + e.getMessage());
+            out.println("Database error: " + e.getMessage());
         }
     }
 }
