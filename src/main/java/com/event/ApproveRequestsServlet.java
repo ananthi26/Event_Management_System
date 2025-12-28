@@ -56,7 +56,7 @@ public class ApproveRequestsServlet extends HttpServlet {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            out.println("❌ Error loading requests.");
+            out.println("Error loading requests.");
         }
     }
 

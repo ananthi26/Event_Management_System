@@ -23,7 +23,7 @@ public class FacultyLoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        // Basic validation
+        
         if (email == null || password == null ||
             !email.endsWith("@srec.ac.in")) {
 
@@ -48,7 +48,7 @@ public class FacultyLoginServlet extends HttpServlet {
 
                 response.sendRedirect("FacultyDashboardServlet");
             } else {
-                // ❌ Invalid faculty
+                
                 response.sendRedirect("faculty-login.html?error=invalid");
             }
 

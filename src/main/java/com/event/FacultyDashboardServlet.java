@@ -22,7 +22,7 @@ public class FacultyDashboardServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        // Not logged in
+        
         if (session == null ||
             !"faculty".equals(session.getAttribute("role"))) {
 
@@ -30,7 +30,7 @@ public class FacultyDashboardServlet extends HttpServlet {
             return;
         }
 
-        // Faculty allowed
+      
         RequestDispatcher rd =
                 request.getRequestDispatcher("faculty-dashboard.html");
         rd.forward(request, response);

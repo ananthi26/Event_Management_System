@@ -51,7 +51,7 @@ public class CompletedEventsServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            out.println("<p style='color:red;'>❌ Error loading completed events</p>");
+            out.println("<p style='color:red;'>Error loading completed events</p>");
         }
     }
 }

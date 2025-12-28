@@ -38,11 +38,11 @@ window.onload = function () {
   const msg = urlParams.get('msg');
 
   if (msg === 'invalid') {
-    alert('❌ Invalid email or password.');
+    alert('Invalid email or password.');
   } else if (msg === 'loggedin') {
-    alert('⚠️ User already logged in elsewhere.');
+    alert('User already logged in elsewhere.');
   } else if (msg === 'dberror') {
-    alert('❌ Database connection error. Please try again later.');
+    alert('Database connection error. Please try again later.');
   }
 };
 

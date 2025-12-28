@@ -20,7 +20,7 @@ public class EventServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Get parameters from the form
+        
         String name = request.getParameter("eventName");
         String description = request.getParameter("description");
         String startTime = request.getParameter("startDateTime");
@@ -30,7 +30,7 @@ public class EventServlet extends HttpServlet {
         String organizer = request.getParameter("organizer");
         String maxParticipantsStr = request.getParameter("maxParticipants");
 
-        // Basic validation
+        
         if (name == null || description == null || startTime == null || endTime == null ||
             venue == null || type == null || organizer == null || maxParticipantsStr == null ||
             name.isEmpty() || maxParticipantsStr.isEmpty()) {

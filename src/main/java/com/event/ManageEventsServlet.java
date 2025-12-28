@@ -43,7 +43,7 @@ public class ManageEventsServlet extends HttpServlet {
             out.println("</head><body>");
 
             out.println("<nav class='top-nav'>");
-            out.println("<div class='nav-title'>🎓 Event Scheduler - Faculty</div>");
+            out.println("<div class='nav-title'>Event Scheduler - Faculty</div>");
             out.println("<div class='nav-links'>");
             out.println("<a href='faculty-dashboard.html'>Dashboard</a>");
             out.println("<a href='ManageEventsServlet'>Manage Events</a>");
