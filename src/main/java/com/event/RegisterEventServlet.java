@@ -7,54 +7,80 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.PrintWriter;
 
 
-
 @WebServlet("/RegisterEventServlet")
+@MultipartConfig
 public class RegisterEventServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
 
-        String studentUsername = request.getParameter("studentUsername");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("studentEmail") == null) {
+            response.getWriter().print("unauthorized");
+            return;
+        }
+
+        String studentEmail = session.getAttribute("studentEmail").toString();
         int eventId = Integer.parseInt(request.getParameter("eventId"));
 
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
+        try (Connection con = DBConnection.getConnection()) {
 
-        try (Connection conn = DBConnection.getConnection()) {
-            String checkQuery = "SELECT * FROM registrations WHERE event_id = ? AND student_username = ?";
-            PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
-            checkStmt.setInt(1, eventId);
-            checkStmt.setString(2, studentUsername);
-            ResultSet rs = checkStmt.executeQuery();
+            // 1️⃣ Prevent duplicate registration
+            PreparedStatement check = con.prepareStatement(
+                "SELECT * FROM event_registrations WHERE student_email=? AND event_id=?"
+            );
+            check.setString(1, studentEmail);
+            check.setInt(2, eventId);
 
+            ResultSet rs = check.executeQuery();
             if (rs.next()) {
-                out.write("Already registered for this event.");
+                response.getWriter().print("already");
                 return;
             }
 
-            String insertQuery = "INSERT INTO registrations (event_id, student_username) VALUES (?, ?)";
-            PreparedStatement insertStmt = conn.prepareStatement(insertQuery);
-            insertStmt.setInt(1, eventId);
-            insertStmt.setString(2, studentUsername);
+            // 2️⃣ Check seats
+            PreparedStatement seat = con.prepareStatement(
+                "SELECT max_participants FROM events WHERE id=?"
+            );
+            seat.setInt(1, eventId);
+            ResultSet seatRs = seat.executeQuery();
 
-            int rows = insertStmt.executeUpdate();
-            if (rows > 0) {
-                out.write("Registration successful!");
-            } else {
-                out.write("Registration failed.");
+            if (!seatRs.next() || seatRs.getInt(1) <= 0) {
+                response.getWriter().print("full");
+                return;
             }
 
-        } catch (SQLException e) {
+            // 3️⃣ Register student
+            PreparedStatement insert = con.prepareStatement(
+                "INSERT INTO event_registrations(student_email,event_id) VALUES (?,?)"
+            );
+            insert.setString(1, studentEmail);
+            insert.setInt(2, eventId);
+            insert.executeUpdate();
+
+            // 4️⃣ Reduce seat count
+            PreparedStatement update = con.prepareStatement(
+                "UPDATE events SET max_participants = max_participants - 1 WHERE id=?"
+            );
+            update.setInt(1, eventId);
+            update.executeUpdate();
+
+            response.getWriter().print("success");
+
+        } catch (Exception e) {
             e.printStackTrace();
-            out.write("DB Error: " + e.getMessage());
+            response.getWriter().print("error");
         }
     }
 }

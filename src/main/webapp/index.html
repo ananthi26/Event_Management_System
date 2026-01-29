@@ -1,33 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Event Scheduler</title>
-  <link rel="stylesheet" href="style/styles.css" />
-  <script>
-  window.onload = function() {
-    document.getElementById("loginForm").reset(); 
-    document.getElementById("email").value = "";   
-    document.getElementById("password").value = "";
-    document.getElementById("captcha").value = "";
-  };
-</script>
-  
+  <meta charset="UTF-8">
+  <title>Event Scheduler</title>
+  <link rel="stylesheet" href="style/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-  <!-- Stylish Navigation Bar -->
-  <nav class="top-nav">
-    <div class="nav-title">Event Scheduler</div>
-    <div class="nav-links">
-      <a href="faculty-login.html">Faculty Dashboard</a>
-      <a href="student-dashboard.html">Student Dashboard</a>
-    </div>
-  </nav>
-  
-  
+<!-- GLOBAL NAVBAR -->
+<nav class="top-nav">
+  <div class="nav-title" id="navTitle">Event Scheduler</div>
+  <div class="nav-links" id="navLinks"></div>
+</nav>
 
-  <script src="js/script.js"></script>
+<!-- SPA CONTENT -->
+<main id="app-content"></main>
+
+<script src="js/script.js"></script>
 </body>
 </html>

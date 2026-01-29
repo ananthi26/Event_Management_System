@@ -4,57 +4,44 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 @WebServlet("/FacultyLoginServlet")
+@MultipartConfig
 public class FacultyLoginServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
+
+        response.setContentType("text/plain");
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        
-        if (email == null || password == null ||
-            !email.endsWith("@srec.ac.in")) {
-
-            response.sendRedirect("faculty-login.html?error=invalid");
-            return;
-        }
-
         try (Connection con = DBConnection.getConnection()) {
 
-            String sql = "SELECT * FROM faculty WHERE email=? AND password=?";
-            PreparedStatement ps = con.prepareStatement(sql);
+            PreparedStatement ps = con.prepareStatement(
+                "SELECT id FROM faculty WHERE email=? AND password=?"
+            );
             ps.setString(1, email);
             ps.setString(2, password);
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                
-                HttpSession session = request.getSession();
-                session.setAttribute("role", "faculty");
-                session.setAttribute("email", email);
-
-                response.sendRedirect("FacultyDashboardServlet");
+                HttpSession session = request.getSession(true);
+                session.setAttribute("facultyEmail", email);
+                response.getWriter().print("success");
             } else {
-                
-                response.sendRedirect("faculty-login.html?error=invalid");
+                response.getWriter().print("fail");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("faculty-login.html?error=db");
+            response.getWriter().print("fail");
         }
     }
 }

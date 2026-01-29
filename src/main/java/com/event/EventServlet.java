@@ -3,83 +3,85 @@ package com.event;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
-import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/EventServlet")
+@MultipartConfig
 public class EventServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
-        
+        response.setContentType("text/plain");
+
+        System.out.println("========== EventServlet START ==========");
+
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            System.out.println("SESSION NULL");
+            response.getWriter().print("unauthorized");
+            return;
+        }
+
+        Object faculty = session.getAttribute("facultyEmail");
+        System.out.println("SESSION facultyEmail = " + faculty);
+
+        if (faculty == null) {
+            response.getWriter().print("unauthorized");
+            return;
+        }
+
         String name = request.getParameter("eventName");
-        String description = request.getParameter("description");
-        String startTime = request.getParameter("startDateTime");
-        String endTime = request.getParameter("endDateTime");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
         String venue = request.getParameter("venue");
         String type = request.getParameter("eventType");
         String organizer = request.getParameter("organizer");
-        String maxParticipantsStr = request.getParameter("maxParticipants");
+        String maxStr = request.getParameter("maxParticipants");
 
-        
-        if (name == null || description == null || startTime == null || endTime == null ||
-            venue == null || type == null || organizer == null || maxParticipantsStr == null ||
-            name.isEmpty() || maxParticipantsStr.isEmpty()) {
+        if (name == null || startDate == null || endDate == null ||
+            venue == null || type == null || organizer == null || maxStr == null) {
 
-            response.sendRedirect("create-event.html?error=Please+fill+all+fields");
+            System.out.println("❌ ONE OR MORE PARAMETERS ARE NULL");
+            response.getWriter().print("error");
             return;
         }
 
-        int maxParticipants;
         try {
-            maxParticipants = Integer.parseInt(maxParticipantsStr);
-        } catch (NumberFormatException e) {
-            response.sendRedirect("create-event.html?error=Invalid+number+for+max+participants");
-            return;
-        }
+            int max = Integer.parseInt(maxStr);
 
-        try (Connection conn = DBConnection.getConnection()) {
+            Connection con = DBConnection.getConnection();
+            System.out.println("DB CONNECTION = " + con);
 
-            if (conn == null) {
-                response.sendRedirect("create-event.html?error=Database+connection+failed");
-                return;
-            }
+            PreparedStatement ps = con.prepareStatement(
+                "INSERT INTO events (name, start_date, end_date, venue, type, organizer, max_participants) VALUES (?,?,?,?,?,?,?)"
+            );
 
-            String sql = "INSERT INTO events (name, description, start_time, end_time, venue, type, organizer, max_participants) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            ps.setString(1, name);
+            ps.setString(2, startDate);
+            ps.setString(3, endDate);
+            ps.setString(4, venue);
+            ps.setString(5, type);
+            ps.setString(6, organizer);
+            ps.setInt(7, max);
 
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int rows = ps.executeUpdate();
+            System.out.println("ROWS INSERTED = " + rows);
 
-                stmt.setString(1, name);
-                stmt.setString(2, description);
-                stmt.setString(3, startTime);
-                stmt.setString(4, endTime);
-                stmt.setString(5, venue);
-                stmt.setString(6, type);
-                stmt.setString(7, organizer);
-                stmt.setInt(8, maxParticipants);
+            response.getWriter().print("success");
 
-                int rows = stmt.executeUpdate();
-
-                if (rows > 0) {
-                    response.sendRedirect("create-event.html?success=true");
-                } else {
-                    response.sendRedirect("create-event.html?error=Failed+to+create+event");
-                }
-            }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            System.out.println("❌ EXCEPTION OCCURRED");
             e.printStackTrace();
-            response.sendRedirect("create-event.html?error=Database+error");
+            response.getWriter().print("error");
         }
+
+        System.out.println("========== EventServlet END ==========");
     }
 }
