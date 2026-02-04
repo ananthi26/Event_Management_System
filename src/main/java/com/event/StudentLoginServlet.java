@@ -43,18 +43,12 @@ public class StudentLoginServlet extends HttpServlet {
 
                 HttpSession session = r.getSession(true);
 
-                // EXISTING (keep this)
-                session.setAttribute("student", email);
-
-                // ✅ ADD THESE (important)
-                session.setAttribute("studentEmail", email);
-                session.setAttribute("studentName", "ANANTHI G"); // or fetch from DB
-                session.setAttribute("studentDept", "CSE");
-
-                session.setMaxInactiveInterval(30 * 60); // 30 minutes
+                session.setAttribute("studentEmail", email); // ONLY THIS
+                session.setMaxInactiveInterval(30 * 60); // 30 mins
 
                 s.getWriter().print("success");
             }
+
 
 
         } catch (Exception e) {

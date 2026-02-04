@@ -219,6 +219,33 @@ function registerEvent(eventId) {
 }
 
 
+
+function loadRegisteredStudents() {
+  fetch("GetRegisteredStudentsServlet")
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("registeredContainer");
+      container.innerHTML = "";
+
+      if (data.length === 0) {
+        container.innerHTML = "<p>No registrations yet</p>";
+        return;
+      }
+
+      data.forEach(item => {
+        let card = `
+          <div class="faculty-card">
+            <h3>${item.event}</h3>
+            <div class="faculty-details">
+              ${item.students.map(email => `<p>${email}</p>`).join("")}
+            </div>
+          </div>
+        `;
+        container.innerHTML += card;
+      });
+    });
+}
+
 // ================================
 // LOGOUT
 // ================================
