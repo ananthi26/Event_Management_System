@@ -18,69 +18,70 @@ import java.io.PrintWriter;
 
 
 @WebServlet("/RegisterEventServlet")
+
 @MultipartConfig
 public class RegisterEventServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws IOException {
 
-        HttpSession session = request.getSession(false);
+        res.setContentType("text/plain");
 
-        if (session == null || session.getAttribute("studentEmail") == null) {
-            response.getWriter().print("unauthorized");
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("student") == null) {
+            res.getWriter().print("session_expired");
             return;
         }
 
-        String studentEmail = session.getAttribute("studentEmail").toString();
-        int eventId = Integer.parseInt(request.getParameter("eventId"));
+        String email = (String) session.getAttribute("student");
+        int eventId = Integer.parseInt(req.getParameter("eventId"));
 
         try (Connection con = DBConnection.getConnection()) {
 
-            // 1️⃣ Prevent duplicate registration
-            PreparedStatement check = con.prepareStatement(
-                "SELECT * FROM event_registrations WHERE student_email=? AND event_id=?"
+            // CHECK DUPLICATE
+            PreparedStatement dup = con.prepareStatement(
+                "SELECT id FROM event_registrations WHERE event_id=? AND student_email=?"
             );
-            check.setString(1, studentEmail);
-            check.setInt(2, eventId);
+            dup.setInt(1, eventId);
+            dup.setString(2, email);
 
-            ResultSet rs = check.executeQuery();
-            if (rs.next()) {
-                response.getWriter().print("already");
+            if (dup.executeQuery().next()) {
+                res.getWriter().print("already_registered");
                 return;
             }
 
-            // 2️⃣ Check seats
+            // CHECK SEATS
             PreparedStatement seat = con.prepareStatement(
                 "SELECT max_participants FROM events WHERE id=?"
             );
             seat.setInt(1, eventId);
-            ResultSet seatRs = seat.executeQuery();
+            ResultSet rs = seat.executeQuery();
 
-            if (!seatRs.next() || seatRs.getInt(1) <= 0) {
-                response.getWriter().print("full");
+            if (!rs.next() || rs.getInt(1) <= 0) {
+                res.getWriter().print("full");
                 return;
             }
 
-            // 3️⃣ Register student
+            // INSERT REGISTRATION
             PreparedStatement insert = con.prepareStatement(
-                "INSERT INTO event_registrations(student_email,event_id) VALUES (?,?)"
+                "INSERT INTO event_registrations(event_id, student_email) VALUES (?,?)"
             );
-            insert.setString(1, studentEmail);
-            insert.setInt(2, eventId);
+            insert.setInt(1, eventId);
+            insert.setString(2, email);
             insert.executeUpdate();
 
-            // 4️⃣ Reduce seat count
+            // DECREASE SEATS SAFELY
             PreparedStatement update = con.prepareStatement(
-                "UPDATE events SET max_participants = max_participants - 1 WHERE id=?"
+                "UPDATE events SET max_participants = max_participants - 1 WHERE id=? AND max_participants > 0"
             );
             update.setInt(1, eventId);
             update.executeUpdate();
 
-            response.getWriter().print("success");
+            res.getWriter().print("success");
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.getWriter().print("error");
+            res.getWriter().print("error");
         }
     }
 }

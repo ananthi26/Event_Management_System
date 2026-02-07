@@ -22,41 +22,46 @@ function loadPage(page) {
       if (page === "student-login.html") initStudentLogin();
       if (page === "create-event.html") initCreateEvent();
       if (page === "student-dashboard.html") loadStudentDashboard();
-      if (page === "upcoming-events.html") loadUpcomingEvents();
+      if (page === "student-upcoming-events.html") loadStudentUpcomingEvents();
+      if (page === "faculty-upcoming-events.html") loadFacultyUpcomingEvents();
+      if (page === "registered-students.html") loadRegisteredStudents();
+      if (page === "edit-event.html") initEditEvent();
     })
     .catch(err => console.error(err));
 }
 
 // ================================
-// NAVBARS
+// NAVBAR HELPERS
 // ================================
+function nav(title, links) {
+  document.getElementById("navTitle").innerText = title;
+  document.getElementById("navLinks").innerHTML = links;
+}
+
 function showPublicNav() {
-  document.getElementById("navTitle").innerText = "Event Scheduler";
-  document.getElementById("navLinks").innerHTML = `
+  nav("Event Scheduler", `
     <a href="#" onclick="loadPage('about.html')">Home</a>
     <a href="#" onclick="loadPage('faculty-login.html')">Faculty</a>
     <a href="#" onclick="loadPage('student-login.html')">Student</a>
-    <a href="#" onclick="logout()">Logout</a>
-  `;
+  `);
 }
 
 function showFacultyNav() {
-  document.getElementById("navTitle").innerText = "Faculty Dashboard";
-  document.getElementById("navLinks").innerHTML = `
+  nav("Faculty Dashboard", `
     <a href="#" onclick="loadPage('faculty-dashboard.html')">Dashboard</a>
     <a href="#" onclick="loadPage('create-event.html')">Create Event</a>
-    <a href="#" onclick="loadPage('upcoming-events.html')">Upcoming</a>
+    <a href="#" onclick="loadPage('faculty-upcoming-events.html')">Upcoming</a>
+    <a href="#" onclick="loadPage('registered-students.html')">Registrations</a>
     <a href="#" onclick="logout()">Logout</a>
-  `;
+  `);
 }
 
 function showStudentNav() {
-  document.getElementById("navTitle").innerText = "Student Dashboard";
-  document.getElementById("navLinks").innerHTML = `
+  nav("Student Dashboard", `
     <a href="#" onclick="loadPage('student-dashboard.html')">Dashboard</a>
-    <a href="#" onclick="loadPage('upcoming-events.html')">Upcoming</a>
+    <a href="#" onclick="loadPage('student-upcoming-events.html')">Upcoming</a>
     <a href="#" onclick="logout()">Logout</a>
-  `;
+  `);
 }
 
 // ================================
@@ -66,7 +71,7 @@ function initFacultyLogin() {
   const form = document.getElementById("facultyLoginForm");
   if (!form) return;
 
-  form.addEventListener("submit", e => {
+  form.onsubmit = e => {
     e.preventDefault();
 
     fetch("/Event_Management_System/FacultyLoginServlet", {
@@ -83,7 +88,7 @@ function initFacultyLogin() {
           "Invalid faculty credentials";
       }
     });
-  });
+  };
 }
 
 // ================================
@@ -93,77 +98,46 @@ function initStudentLogin() {
   const form = document.getElementById("studentLoginForm");
   if (!form) return;
 
-  form.addEventListener("submit", e => {
+  form.onsubmit = e => {
     e.preventDefault();
 
     fetch("/Event_Management_System/StudentLoginServlet", {
       method: "POST",
       body: new FormData(form)
     })
-    .then(res => res.text())
-    .then(text => {
-      if (text.trim() === "success") {
-
-        sessionStorage.setItem("studentName", "ANANTHI G");
-        sessionStorage.setItem("studentEmail", "ananthi.2301013@srec.ac.in");
-
+    .then(r => r.text())
+    .then(res => {
+      if (res.trim() === "success") {
         showStudentNav();
         loadPage("student-dashboard.html");
-
       } else {
         document.getElementById("loginError").innerText =
           "Invalid student credentials";
       }
-    })
-    .catch(() => alert("Server error"));
-  });
-}
-
-// ================================
-// CREATE EVENT
-// ================================
-function initCreateEvent() {
-  const form = document.getElementById("eventForm");
-  if (!form) return;
-
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-
-    fetch("/Event_Management_System/EventServlet", {
-      method: "POST",
-      body: new FormData(form)
-    })
-    .then(r => r.text())
-    .then(res => {
-      if (res.trim() === "success") {
-        alert("Event created successfully");
-        loadPage("faculty-dashboard.html");
-      } else {
-        alert("Failed to create event");
-      }
     });
-  });
+  };
 }
 
 // ================================
 // STUDENT DASHBOARD
 // ================================
 function loadStudentDashboard() {
-  document.getElementById("studentName").innerText =
-    sessionStorage.getItem("studentName");
-
-  document.getElementById("studentEmail").innerText =
-    sessionStorage.getItem("studentEmail");
+  fetch("/Event_Management_System/GetStudentProfileServlet")
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById("studentName").innerText = "Student";
+      document.getElementById("studentEmail").innerText = d.email;
+    });
 }
 
 // ================================
-// UPCOMING EVENTS
+// STUDENT UPCOMING EVENTS (REGISTER)
 // ================================
-function loadUpcomingEvents() {
-  fetch("/Event_Management_System/GetUpcomingEventsServlet")
+function loadStudentUpcomingEvents() {
+  fetch("/Event_Management_System/StudentUpcomingEventsServlet")
     .then(r => r.json())
     .then(events => {
-      const box = document.getElementById("eventsContainer");
+		const box = document.getElementById("studentEventsContainer");
       box.innerHTML = "";
 
       if (events.length === 0) {
@@ -177,10 +151,13 @@ function loadUpcomingEvents() {
             <h3>${e.name}</h3>
             <p><b>Date:</b> ${e.start} → ${e.end}</p>
             <p><b>Venue:</b> ${e.venue}</p>
-            <p><b>Seats Left:</b> ${e.max}</p>
-            <button ${e.max === 0 ? "disabled" : ""}
+            <p><b>Seats Left:</b> ${e.seats}</p>
+
+            <button
+              ${e.registered || e.seats <= 0 ? "disabled" : ""}
               onclick="registerEvent(${e.id})">
-              ${e.max === 0 ? "Full" : "Register"}
+              ${e.registered ? "Already Registered" :
+                e.seats <= 0 ? "Full" : "Register"}
             </button>
           </div>
         `;
@@ -188,60 +165,199 @@ function loadUpcomingEvents() {
     });
 }
 
+function initCreateEvent() {
+  const form = document.getElementById("eventForm");
+  if (!form) return;
+
+  form.onsubmit = (e) => {
+    e.preventDefault();
+
+    const fd = new FormData(form);
+
+    fetch("/Event_Management_System/EventServlet", {
+      method: "POST",
+      body: fd
+    })
+    .then(r => r.text())
+    .then(res => {
+      console.log("Create Event Response:", res);
+
+      if (res === "success") {
+        alert("Event Created Successfully!");
+        loadPage("faculty-upcoming-events.html");
+      } else if (res === "unauthorized") {
+        alert("Session expired. Login again.");
+        logout();
+      } else {
+        alert("Failed to create event. Please try again.");
+      }
+    })
+    .catch(err => {
+      console.error("Error:", err);
+      alert("Network error!");
+    });
+  };
+}
+
+
 // ================================
-// REGISTER EVENT (SINGLE VERSION ✅)
+// FACULTY UPCOMING EVENTS (EDIT / DELETE)
+// ================================
+function loadFacultyUpcomingEvents() {
+  fetch("/Event_Management_System/FacultyUpcomingEventsServlet")
+    .then(r => r.json())
+    .then(events => {
+      const box = document.getElementById("eventsContainer");
+      box.innerHTML = "";
+
+      events.forEach(e => {
+        box.innerHTML += `
+          <div class="event-card">
+            <h3>${e.name}</h3>
+            <p><b>Date:</b> ${e.start} → ${e.end}</p>
+            <p><b>Venue:</b> ${e.venue}</p>
+            <p><b>Seats Left:</b> ${e.seats}</p>
+
+            <div class="faculty-actions">
+              <button class="edit-btn" onclick="editEvent(${e.id})">Edit</button>
+              <button class="delete-btn" onclick="deleteEvent(${e.id})">Delete</button>
+            </div>
+          </div>
+        `;
+      });
+    });
+}
+
+// ================================
+// REGISTER EVENT
 // ================================
 function registerEvent(eventId) {
   fetch("/Event_Management_System/RegisterEventServlet", {
     method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: "eventId=" + eventId
   })
-  .then(r => r.text())
+  .then(response => response.text())
   .then(res => {
+
+    res = res.trim(); // remove spaces
+
     if (res === "success") {
       alert("Registered successfully!");
-      loadUpcomingEvents();
-    } else if (res === "already") {
-      alert("Already Registered");
-    } else if (res === "full") {
-      alert("No seats available");
-    } else if (res === "unauthorized") {
-      alert("Session expired. Please login again.");
-      logout();
-    } else {
-      alert("Error registering");
+      loadStudentUpcomingEvents();
     }
+
+    else if (res === "already_registered") {
+      alert("You have already registered for this event.");
+    }
+
+    else if (res === "full") {
+      alert("No seats available! The event is full.");
+    }
+
+    else if (res === "session_expired") {
+      alert("Your session expired. Please log in again.");
+      logout();
+    }
+
+    else {
+      alert("An error occurred while registering.");
+    }
+
+  })
+  .catch(err => {
+    console.error("Registration Error:", err);
+    alert("Something went wrong.");
   });
 }
 
+// ================================
+// EDIT EVENT (SPA SAFE)
+// ================================
+function editEvent(id) {
+  sessionStorage.setItem("editEventId", id);
+  loadPage("edit-event.html");
+}
+
+// ================================
+// INIT EDIT EVENT
+// ================================
+function initEditEvent() {
+  const eventId = sessionStorage.getItem("editEventId");
+  if (!eventId) return;
+
+  fetch("/Event_Management_System/GetEventByIdServlet?id=" + eventId)
+    .then(r => r.json())
+    .then(e => {
+      const f = document.getElementById("editEventForm");
+      f.name.value = e.name;
+      f.start_date.value = e.start;
+      f.end_date.value = e.end;
+      f.venue.value = e.venue;
+      f.max_participants.value = e.max;
+    });
+
+  document.getElementById("editEventForm").onsubmit = ev => {
+    ev.preventDefault();
+
+    const fd = new FormData(ev.target);
+    fd.append("id", eventId);
+
+    fetch("/Event_Management_System/UpdateEventServlet", {
+      method: "POST",
+      body: fd
+    })
+    .then(r => r.text())
+    .then(res => {
+      if (res === "success") {
+        alert("Event updated");
+        loadPage("faculty-upcoming-events.html");
+      } else {
+        alert("Update failed");
+      }
+    });
+  };
+}
 
 
+// ================================
+// DELETE EVENT
+// ================================
+function deleteEvent(id) {
+  if (!confirm("Delete this event?")) return;
+
+  fetch("/Event_Management_System/DeleteEventServlet", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "eventId=" + id
+  })
+  .then(() => loadFacultyUpcomingEvents());
+}
+
+// ================================
+// FACULTY → REGISTERED STUDENTS
+// ================================
 function loadRegisteredStudents() {
-  fetch("GetRegisteredStudentsServlet")
-    .then(res => res.json())
+  fetch("/Event_Management_System/GetRegisteredStudentsServlet")
+    .then(r => r.json())
     .then(data => {
-      const container = document.getElementById("registeredContainer");
-      container.innerHTML = "";
+      const box = document.getElementById("registeredContainer");
+      box.innerHTML = "";
 
       if (data.length === 0) {
-        container.innerHTML = "<p>No registrations yet</p>";
+        box.innerHTML = "<p>No registrations yet</p>";
         return;
       }
 
       data.forEach(item => {
-        let card = `
+        box.innerHTML += `
           <div class="faculty-card">
             <h3>${item.event}</h3>
             <div class="faculty-details">
-              ${item.students.map(email => `<p>${email}</p>`).join("")}
+              ${item.students.map(s => `<p>${s}</p>`).join("")}
             </div>
           </div>
         `;
-        container.innerHTML += card;
       });
     });
 }
@@ -250,7 +366,9 @@ function loadRegisteredStudents() {
 // LOGOUT
 // ================================
 function logout() {
-  sessionStorage.clear();
-  showPublicNav();
-  loadPage("about.html");
+  fetch("/Event_Management_System/LogoutServlet")
+    .finally(() => {
+      showPublicNav();
+      loadPage("about.html");
+    });
 }

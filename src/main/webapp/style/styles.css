@@ -437,4 +437,148 @@ body {
   color: #444;
 }
 
+/* =========================
+   EVENT CARD GRID
+========================= */
+.event-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1100px;
+  margin: auto;
+}
 
+/* =========================
+   EVENT CARD
+========================= */
+.event-card {
+  background: #fff;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+}
+
+.event-card h3 {
+  color: #0d6efd;
+  margin-bottom: 10px;
+}
+
+.event-card p {
+  margin: 5px 0;
+  color: #444;
+  font-size: 14px;
+}
+
+/* =========================
+   FACULTY ACTION BUTTONS
+========================= */
+.faculty-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.faculty-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: white;
+}
+
+.edit-btn {
+  background: #0d6efd;
+}
+
+.edit-btn:hover {
+  background: #084cdf;
+}
+
+.delete-btn {
+  background: #dc3545;
+}
+
+.delete-btn:hover {
+  background: #b02a37;
+}
+
+/* =========================
+   PAGE TITLE
+========================= */
+.page-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+
+/* SAME CONTAINER AS CREATE EVENT */
+.form-container {
+    width: 100%;
+    max-width: 650px;
+    background: white;
+    margin: 40px auto;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* SAME HEADING */
+.form-title {
+    text-align: center;
+    color: #2368e8;
+    font-size: 26px;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+/* SAME FORM STYLE */
+#editEventForm {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* SAME INPUT STYLING */
+#editEventForm input, #editEventForm select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    background: #fafafa;
+    transition: 0.3s ease;
+}
+
+#editEventForm input:focus,
+#editEventForm select:focus {
+    border-color: #2368e8;
+    background: white;
+    box-shadow: 0 0 6px rgba(35,104,232,0.3);
+}
+
+/* SAME BLUE BUTTON */
+.submit-btn {
+    margin-top: 10px;
+    background: #2368e8;
+    color: white;
+    font-size: 18px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.submit-btn:hover {
+    background: #1d54c2;
+}
