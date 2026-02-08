@@ -1,14 +1,9 @@
-// ================================
-// INITIAL LOAD
-// ================================
 document.addEventListener("DOMContentLoaded", () => {
   showPublicNav();
   loadPage("about.html");
 });
 
-// ================================
-// PAGE LOADER (SPA CORE)
-// ================================
+
 function loadPage(page) {
   fetch("partials/" + page, { cache: "no-store" })
     .then(r => r.text())
@@ -26,9 +21,6 @@ function loadPage(page) {
     });
 }
 
-// ================================
-// NAVBAR HELPERS
-// ================================
 function nav(title, links) {
   document.getElementById("navTitle").innerText = title;
   document.getElementById("navLinks").innerHTML = links;
@@ -60,9 +52,7 @@ function showStudentNav() {
   `);
 }
 
-// ================================
-// FACULTY LOGIN
-// ================================
+
 function initFacultyLogin() {
   const form = document.getElementById("facultyLoginForm");
   if (!form) return;
@@ -87,10 +77,6 @@ function initFacultyLogin() {
   };
 }
 
-
-// ================================
-// CREATE EVENT
-// ================================
 function initCreateEvent() {
   const form = document.getElementById("eventForm");
   if (!form) return;
@@ -112,9 +98,7 @@ function initCreateEvent() {
       res = res.trim();
 
       if (res === "success") {
-        // ✅ Show alert first
         alert("Event created successfully!");
-        // ✅ After OK, redirect to faculty upcoming events page
         loadPage("faculty-upcoming-events.html");
       } else if (res === "unauthorized") {
         alert("Unauthorized: Please login as faculty.");
@@ -129,13 +113,6 @@ function initCreateEvent() {
   };
 }
 
-
-
-
-
-// ================================
-// STUDENT LOGIN
-// ================================
 function initStudentLogin() {
   const form = document.getElementById("studentLoginForm");
   if (!form) return;
@@ -160,9 +137,6 @@ function initStudentLogin() {
   };
 }
 
-// ================================
-// STUDENT DASHBOARD
-// ================================
 function loadStudentDashboard() {
   fetch("/Event_Management_System/GetStudentProfileServlet")
     .then(r => r.json())
@@ -172,9 +146,7 @@ function loadStudentDashboard() {
     });
 }
 
-// ================================
-// STUDENT UPCOMING EVENTS (REGISTER)
-// ================================
+
 function loadStudentUpcomingEvents() {
   fetch("/Event_Management_System/StudentUpcomingEventsServlet")
     .then(r => r.json())
@@ -188,7 +160,7 @@ function loadStudentUpcomingEvents() {
       }
 
       events.forEach(e => {
-        // Make sure each card uses your event-card class
+        
         box.innerHTML += `
           <div class="event-card">
             <h3>${e.name}</h3>
@@ -208,10 +180,6 @@ function loadStudentUpcomingEvents() {
     });
 }
 
-
-// ================================
-// REGISTER EVENT
-// ================================
 function registerEvent(eventId) {
   fetch("/Event_Management_System/RegisterEventServlet", {
     method: "POST",
@@ -238,9 +206,6 @@ function registerEvent(eventId) {
   });
 }
 
-// ================================
-// FACULTY UPCOMING EVENTS
-// ================================
 function loadFacultyUpcomingEvents() {
   fetch("/Event_Management_System/FacultyUpcomingEventsServlet")
     .then(r => r.json())
@@ -266,14 +231,12 @@ function loadFacultyUpcomingEvents() {
     });
 }
 
-// ================================
-// FACULTY REGISTERED STUDENTS (CORRECT WORKING VERSION)
-// ================================
+
 function loadRegisteredStudents() {
   fetch("/Event_Management_System/GetRegisteredStudentsServlet")
     .then(r => r.json())
     .then(data => {
-      window.allRegistrations = data; // store for search
+      window.allRegistrations = data; 
       renderRegisteredStudents(data);
     });
 }
@@ -306,28 +269,12 @@ function loadRegisteredStudents() {
 }
 
 
-function filterRegistrations() {
-  const value = document.getElementById("searchReg").value.toLowerCase();
-
-  const filtered = window.allRegistrations.filter(ev =>
-    ev.event.toLowerCase().includes(value)
-  );
-
-  renderRegisteredStudents(filtered);
-}
-
-
-// ================================
-// EDIT EVENT
-// ================================
 function editEvent(id) {
   sessionStorage.setItem("editEventId", id);
   loadPage("edit-event.html");
 }
 
-// ================================
-// LOAD EVENT TO EDIT
-// ================================
+
 function initEditEvent() {
   const id = sessionStorage.getItem("editEventId");
   if (!id) return;
@@ -365,9 +312,6 @@ function initEditEvent() {
   };
 }
 
-// ================================
-// DELETE EVENT
-// ================================
 function deleteEvent(id) {
   if (!confirm("Delete this event?")) return;
 
@@ -379,9 +323,6 @@ function deleteEvent(id) {
   .then(() => loadFacultyUpcomingEvents());
 }
 
-// ================================
-// LOGOUT
-// ================================
 function logout() {
   fetch("/Event_Management_System/LogoutServlet")
     .finally(() => {
