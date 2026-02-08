@@ -222,33 +222,54 @@ function loadFacultyUpcomingEvents() {
 // FACULTY REGISTERED STUDENTS (CORRECT WORKING VERSION)
 // ================================
 function loadRegisteredStudents() {
-  fetch("/Event_Management_System/FacultyRegistrationsServlet")
+  fetch("/Event_Management_System/GetRegisteredStudentsServlet")
     .then(r => r.json())
-    .then(events => {
+    .then(data => {
+      window.allRegistrations = data; // store for search
+      renderRegisteredStudents(data);
+    });
+}
+
+function loadRegisteredStudents() {
+  fetch("/Event_Management_System/GetRegisteredStudentsServlet")
+    .then(r => r.json())
+    .then(data => {
       const box = document.getElementById("registeredContainer");
       box.innerHTML = "";
 
-      if (events.length === 0) {
+      if (data.length === 0) {
         box.innerHTML = "<p>No registrations yet</p>";
         return;
       }
 
-      events.forEach(ev => {
+      data.forEach(item => {
+        const studentsHTML = item.students.length > 0
+          ? item.students.map(s => `<div class="student-email">${s}</div>`).join("")
+          : `<div class="no-students">No students registered</div>`;
+
         box.innerHTML += `
-          <div class="faculty-card">
-            <h3>${ev.eventName}</h3>
-            <div class="faculty-details">
-              ${
-                ev.students.length === 0 
-                ? "<p>No students registered</p>"
-                : ev.students.map(s => `<p>${s}</p>`).join("")
-              }
-            </div>
+          <div class="registration-card">
+            <h3>${item.event}</h3>
+            ${studentsHTML}
           </div>
         `;
       });
     });
 }
+
+
+
+
+function filterRegistrations() {
+  const value = document.getElementById("searchReg").value.toLowerCase();
+
+  const filtered = window.allRegistrations.filter(ev =>
+    ev.event.toLowerCase().includes(value)
+  );
+
+  renderRegisteredStudents(filtered);
+}
+
 
 // ================================
 // EDIT EVENT

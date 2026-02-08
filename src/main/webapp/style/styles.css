@@ -1,3 +1,4 @@
+
 /* ======================
    RESET & BASE
 ====================== */
@@ -602,4 +603,106 @@ body {
 .no-students {
     color: #777;
     font-style: italic;
+}
+
+
+/* Container as grid */
+#registeredContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 10px;
+}
+
+/* Compact card */
+.faculty-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-left: 6px solid #777;
+  width: 100%;
+  max-width: 330px;  /* controls card width */
+  margin: auto;
+  transition: 0.2s ease;
+}
+
+.faculty-card:hover {
+  transform: translateY(-5px);
+}
+
+.faculty-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+}
+
+.student-count {
+  margin-bottom: 10px;
+  background: #f1f1f1;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Student entries */
+.faculty-details p {
+  background: #f7f7f7;
+  padding: 6px;
+  margin: 5px 0;
+  border-radius: 5px;
+}
+
+/* Color coding */
+.low { border-left-color: #28a745; }
+.medium { border-left-color: #f0ad4e; }
+.high { border-left-color: #d9534f; }
+
+
+/* Container for all registration cards */
+#registeredContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Event card */
+.registration-card {
+    width: 280px;               /* same width as your upcoming events */
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: 0.2s ease;
+}
+
+.registration-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.registration-card h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Student email list */
+.student-email {
+    background: #f4f4f4;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    word-break: break-all;
+    border-left: 3px solid #4A90E2;
+}
+
+/* No students case */
+.no-students {
+    color: #777;
+    background: #f7f7f7;
+    padding: 8px;
+    border-radius: 6px;
+    text-align: center;
 }
