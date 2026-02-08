@@ -87,6 +87,52 @@ function initFacultyLogin() {
   };
 }
 
+
+// ================================
+// CREATE EVENT
+// ================================
+function initCreateEvent() {
+  const form = document.getElementById("eventForm");
+  if (!form) return;
+
+  form.onsubmit = e => {
+    e.preventDefault();
+
+    const fd = new FormData(form);
+    const params = new URLSearchParams();
+    for (let [key, value] of fd.entries()) params.append(key, value);
+
+    fetch("/Event_Management_System/EventServlet", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString()
+    })
+    .then(r => r.text())
+    .then(res => {
+      res = res.trim();
+
+      if (res === "success") {
+        // ✅ Show alert first
+        alert("Event created successfully!");
+        // ✅ After OK, redirect to faculty upcoming events page
+        loadPage("faculty-upcoming-events.html");
+      } else if (res === "unauthorized") {
+        alert("Unauthorized: Please login as faculty.");
+      } else {
+        alert("Error creating event!");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Network error!");
+    });
+  };
+}
+
+
+
+
+
 // ================================
 // STUDENT LOGIN
 // ================================
@@ -256,8 +302,6 @@ function loadRegisteredStudents() {
       });
     });
 }
-
-
 
 
 function filterRegistrations() {

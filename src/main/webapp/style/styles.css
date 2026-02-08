@@ -1,4 +1,3 @@
-
 /* ======================
    RESET & BASE
 ====================== */
@@ -13,6 +12,97 @@ body {
   background: #f4f6f8;
   color: #333;
 }
+
+/* ======================
+   ABOUT SECTION
+====================== */
+
+/* Remove any colored background */
+.full-width {
+  background: none; /* same as page */
+  color: #333;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+/* Heading and paragraph */
+.full-width h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #0d6efd; /* make heading blue */
+}
+
+.full-width p {
+  font-size: 18px;
+  max-width: 900px;
+  margin: 0 auto 40px auto;
+  line-height: 1.6;
+  color: #333; /* paragraph in black */
+}
+
+/* Cards container */
+.info-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* Individual cards */
+.info-card {
+  background: #ffffff; /* white background */
+  color: #000000;      /* black text */
+  border-radius: 12px;
+  padding: 25px;
+  width: 280px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: 0.3s ease;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Card hover effect */
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+/* Remove bullet dots for courses */
+.courses-card .info-card::before {
+  content: none;
+}
+
+/* Headings inside Expert/Achievements cards */
+.info-card h3 {
+  margin-bottom: 12px;
+  color: #000000; /* black heading */
+}
+
+/* Paragraph inside Expert/Achievements cards */
+.info-card p {
+  color: #000000; /* black text */
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .info-card {
+    width: 45%;
+  }
+}
+
+@media (max-width: 600px) {
+  .info-card {
+    width: 90%;
+  }
+}
+
+
+
+
 
 /* ======================
    NAVBAR
@@ -37,7 +127,7 @@ body {
   padding: 6px 14px;
   border-radius: 6px;
   border: 2px solid transparent;
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
   margin-left: 10px;
 }
 
@@ -48,7 +138,7 @@ body {
 }
 
 /* ======================
-   SPA CONTENT AREA
+   SPA CONTENT
 ====================== */
 #app-content {
   padding: 40px;
@@ -103,68 +193,73 @@ body {
 }
 
 /* ======================
-   STUDENT DASHBOARD LAYOUT
+   STUDENT PROFILE
 ====================== */
+/* Student Dashboard → Same style as Faculty Card */
 .student-dashboard {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding-top: 60px;
+  margin-top: 40px;
 }
 
-/* ======================
-   PROFILE CARD (STUDENT)
-====================== */
-.student-dashboard {
-  display: flex;
-  justify-content: center;
-  padding-top: 60px;
-}
-
-.profile-card {
-  width: 340px;
-  background: white;
-  padding: 30px 25px;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+.student-card {
+  width: 380px;               /* same width as faculty card */
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);  /* same soft shadow */
   text-align: center;
+  transition: 0.2s ease;
 }
 
-.profile-img
-{
-	width:340px;
-	display: flex;
-  justify-content: center;
-  padding-top: 60px;
-  margin-right:100px;
+.student-card img {
+  width: 100px;           /* adjust size as needed */
+  height: 100px;          /* keep it square for perfect circle */
+  object-fit: cover;      /* ensures image fills the circle without distortion */
+  border-radius: 50%;     /* makes the image circular */
+  margin-bottom: 15px;    /* spacing below the image */
+  border: 2px solid #0d6efd; /* optional border to match card color */
 }
 
-.profile-card h2 {
-  color: #0d6efd;
-  margin-top: 10px;
+/* Hover effect same as faculty */
+.student-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+}
+
+.student-card h2 {
   font-size: 22px;
+  margin-bottom: 6px;
+  color: #0d6efd;
+  font-weight: 600;
 }
 
-.profile-card .email {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 18px;
-}
-
-.profile-card .info {
+.student-card .email {
   font-size: 15px;
-  margin: 6px 0;
+  color: #555;
+  margin-bottom: 12px;
 }
+
+.student-card .info {
+  font-size: 16px;
+  color: #333;
+  margin: 10px 0;
+  font-weight: 500;
+}
+
 
 
 /* ======================
    UPCOMING EVENTS
 ====================== */
-.event-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+.event-card-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 30px;
+  justify-content: flex-start;
+  width: 100%;
 }
+
 
 .event-card {
   width: 280px;
@@ -174,8 +269,14 @@ body {
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
+.event-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
+}
+
 .event-card h3 {
   color: #0d6efd;
+  margin-bottom: 10px;
 }
 
 .event-card button {
@@ -189,84 +290,57 @@ body {
   cursor: pointer;
 }
 
-.event-card button:disabled {
-  background: gray;
-}
-
-
 /* ======================
-   CREATE EVENT FORM
+   CREATE & EDIT EVENT
 ====================== */
+.form-container,
 #create-event-container {
-  max-width: 600px;
+  max-width: 650px;
+  background: white;
   margin: 40px auto;
-  background: #ffffff;
-  padding: 30px 35px;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  padding: 35px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
+.form-title,
 #create-event-container h3 {
   text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: #2368e8;
   margin-bottom: 25px;
-  color: #0d6efd;
 }
 
+.form-container input,
+.form-container select,
 #create-event-container input,
 #create-event-container select {
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  background: #fafafa;
   margin-bottom: 15px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  transition: 0.3s ease;
 }
 
+.submit-btn,
 #create-event-container button {
   width: 100%;
   padding: 14px;
-  background: #0d6efd;
+  background: #2368e8;
   color: white;
-  font-size: 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-}
-
-#create-event-container button:hover {
-  background: #0b5ed7;
+  font-size: 18px;
 }
 
 /* ======================
-   ERROR TEXT
+   FACULTY CARDS
 ====================== */
-#error,
-#loginError {
-  color: red;
-  margin-top: 10px;
-  text-align: center;
-}
-
-/* ======================
-   ANIMATIONS
-====================== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ===== DASHBOARD CONTAINER ===== */
-.dashboard-container {
-  padding: 40px;
-  background: #f4f6fb;
-}
-
-/* ===== FACULTY CARD GRID ===== */
 .faculty-card-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -275,25 +349,19 @@ body {
   margin: auto;
 }
 
-/* ===== FACULTY CARD ===== */
 .faculty-card {
-  background: #ffffff;
+  background: #fff;
   border-radius: 16px;
-  padding: 25px 20px;
+  padding: 20px;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  transition: 0.3s ease;
 }
 
-/* ===== HOVER EFFECT ===== */
 .faculty-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* ===== FACULTY IMAGE ===== */
 .faculty-img {
   width: 110px;
   height: 110px;
@@ -303,23 +371,7 @@ body {
   border: 4px solid #6c63ff;
 }
 
-/* ===== TEXT ===== */
-.faculty-card h3 {
-  font-size: 20px;
-  margin: 8px 0 4px;
-  color: #333;
-}
-
-.designation {
-  font-size: 14px;
-  color: #6c63ff;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
-/* ===== DETAILS ===== */
 .faculty-details {
-  text-align: left;
   background: #f8f9ff;
   padding: 12px;
   border-radius: 10px;
@@ -327,382 +379,53 @@ body {
   margin-bottom: 15px;
 }
 
-.faculty-details p {
-  margin: 6px 0;
-  color: #444;
-}
+/* ======================
+   REGISTRATION CARDS
+====================== */
 
-/* ===== ABOUT TEXT ===== */
-.faculty-about {
-  font-size: 14px;
-  color: #555;
-  line-height: 1.6;
-}
-
-/* ===== ANIMATIONS ===== */
-.fade-in {
-  animation: fadeIn 0.8s ease-in-out;
-}
-
-.zoom-in {
-  animation: zoomIn 0.6s ease-in-out;
-}
-
-.delay-1 {
-  animation-delay: 0.2s;
-}
-
-.delay-2 {
-  animation-delay: 0.4s;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes zoomIn {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* ===== STUDENT DASHBOARD CONTAINER ===== */
-.student-dashboard {
-  padding: 40px;
-  background: #f4f6fb;
-  display: flex;
-  justify-content: center;
-}
-
-/* ===== STUDENT CARD ===== */
-.student-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 30px 25px;
-  text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 340px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* ===== HOVER EFFECT ===== */
-.student-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* ===== STUDENT IMAGE (SAME AS FACULTY IMAGE STYLE) ===== */
-.student-img {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 15px;
-  border: 4px solid #6c63ff; /* same color */
-}
-
-/* ===== STUDENT NAME ===== */
-.student-card h2 {
-  font-size: 20px;
-  margin: 8px 0 4px;
-  color: #333;
-}
-
-/* ===== STUDENT EMAIL ===== */
-.student-email {
-  font-size: 14px;
-  color: #6c63ff;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
-/* ===== STUDENT DETAILS ===== */
-.student-details {
-  text-align: left;
-  background: #f8f9ff;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-.student-details p {
-  margin: 6px 0;
-  color: #444;
-}
-
-/* =========================
-   EVENT CARD GRID
-========================= */
-.event-card-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  max-width: 1100px;
-  margin: auto;
-}
-
-/* =========================
-   EVENT CARD
-========================= */
-.event-card {
-  background: #fff;
-  padding: 22px;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.event-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.18);
-}
-
-.event-card h3 {
-  color: #0d6efd;
-  margin-bottom: 10px;
-}
-
-.event-card p {
-  margin: 5px 0;
-  color: #444;
-  font-size: 14px;
-}
-
-/* =========================
-   FACULTY ACTION BUTTONS
-========================= */
-.faculty-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.faculty-actions button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  cursor: pointer;
-  color: white;
-}
-
-.edit-btn {
-  background: #0d6efd;
-}
-
-.edit-btn:hover {
-  background: #084cdf;
-}
-
-.delete-btn {
-  background: #dc3545;
-}
-
-.delete-btn:hover {
-  background: #b02a37;
-}
-
-/* =========================
-   PAGE TITLE
-========================= */
-.page-title {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #333;
-}
-
-
-/* SAME CONTAINER AS CREATE EVENT */
-.form-container {
-    width: 100%;
-    max-width: 650px;
-    background: white;
-    margin: 40px auto;
-    padding: 35px;
-    border-radius: 18px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-}
-
-/* SAME HEADING */
-.form-title {
-    text-align: center;
-    color: #2368e8;
-    font-size: 26px;
-    margin-bottom: 25px;
-    font-weight: 700;
-}
-
-/* SAME FORM STYLE */
-#editEventForm {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-/* SAME INPUT STYLING */
-#editEventForm input, #editEventForm select {
-    width: 100%;
-    padding: 14px 16px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-    background: #fafafa;
-    transition: 0.3s ease;
-}
-
-#editEventForm input:focus,
-#editEventForm select:focus {
-    border-color: #2368e8;
-    background: white;
-    box-shadow: 0 0 6px rgba(35,104,232,0.3);
-}
-
-/* SAME BLUE BUTTON */
-.submit-btn {
-    margin-top: 10px;
-    background: #2368e8;
-    color: white;
-    font-size: 18px;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.2s ease;
-}
-
-.submit-btn:hover {
-    background: #1d54c2;
-}
-
-
-.event-card {
-    background: #fff;
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-.student {
-    background: #f5f5f5;
-    padding: 6px 10px;
-    margin: 6px 0;
-    border-radius: 6px;
-}
-
-.no-students {
-    color: #777;
-    font-style: italic;
-}
-
-
-/* Container as grid */
+/* Container */
 #registeredContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
-  padding: 10px;
+  padding: 20px;
 }
 
-/* Compact card */
-.faculty-card {
-  background: #fff;
-  padding: 18px;
+/* Compact card like event-card */
+.registration-card {
+  width: 280px;
+  background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border-left: 6px solid #777;
-  width: 100%;
-  max-width: 330px;  /* controls card width */
-  margin: auto;
+  padding: 18px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
   transition: 0.2s ease;
 }
 
-.faculty-card:hover {
-  transform: translateY(-5px);
-}
-
-.faculty-card h3 {
-  margin: 0 0 10px 0;
-  font-size: 18px;
-}
-
-.student-count {
-  margin-bottom: 10px;
-  background: #f1f1f1;
-  padding: 6px 10px;
-  border-radius: 5px;
-  font-size: 14px;
-}
-
-/* Student entries */
-.faculty-details p {
-  background: #f7f7f7;
-  padding: 6px;
-  margin: 5px 0;
-  border-radius: 5px;
-}
-
-/* Color coding */
-.low { border-left-color: #28a745; }
-.medium { border-left-color: #f0ad4e; }
-.high { border-left-color: #d9534f; }
-
-
-/* Container for all registration cards */
-#registeredContainer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 20px;
-}
-
-/* Event card */
-.registration-card {
-    width: 280px;               /* same width as your upcoming events */
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 18px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    transition: 0.2s ease;
-}
-
 .registration-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
 .registration-card h3 {
-    margin: 0 0 10px;
-    font-size: 18px;
-    font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 /* Student email list */
 .student-email {
-    background: #f4f4f4;
-    padding: 8px 12px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    font-size: 14px;
-    word-break: break-all;
-    border-left: 3px solid #4A90E2;
+  background: #f4f4f4;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  word-break: break-all;
+  border-left: 3px solid #4A90E2;
 }
 
-/* No students case */
 .no-students {
-    color: #777;
-    background: #f7f7f7;
-    padding: 8px;
-    border-radius: 6px;
-    text-align: center;
+  color: #777;
+  background: #f7f7f7;
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
 }
