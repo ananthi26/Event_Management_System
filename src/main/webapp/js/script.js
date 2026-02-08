@@ -11,10 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ================================
 function loadPage(page) {
   fetch("partials/" + page, { cache: "no-store" })
-    .then(r => {
-      if (!r.ok) throw new Error("Page load failed");
-      return r.text();
-    })
+    .then(r => r.text())
     .then(html => {
       document.getElementById("app-content").innerHTML = html;
 
@@ -26,8 +23,7 @@ function loadPage(page) {
       if (page === "faculty-upcoming-events.html") loadFacultyUpcomingEvents();
       if (page === "registered-students.html") loadRegisteredStudents();
       if (page === "edit-event.html") initEditEvent();
-    })
-    .catch(err => console.error(err));
+    });
 }
 
 // ================================
@@ -137,7 +133,7 @@ function loadStudentUpcomingEvents() {
   fetch("/Event_Management_System/StudentUpcomingEventsServlet")
     .then(r => r.json())
     .then(events => {
-		const box = document.getElementById("studentEventsContainer");
+      const box = document.getElementById("studentEventsContainer");
       box.innerHTML = "";
 
       if (events.length === 0) {
@@ -165,43 +161,37 @@ function loadStudentUpcomingEvents() {
     });
 }
 
-function initCreateEvent() {
-  const form = document.getElementById("eventForm");
-  if (!form) return;
+// ================================
+// REGISTER EVENT
+// ================================
+function registerEvent(eventId) {
+  fetch("/Event_Management_System/RegisterEventServlet", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "eventId=" + eventId
+  })
+  .then(r => r.text())
+  .then(res => {
+    res = res.trim();
 
-  form.onsubmit = (e) => {
-    e.preventDefault();
-
-    const fd = new FormData(form);
-
-    fetch("/Event_Management_System/EventServlet", {
-      method: "POST",
-      body: fd
-    })
-    .then(r => r.text())
-    .then(res => {
-      console.log("Create Event Response:", res);
-
-      if (res === "success") {
-        alert("Event Created Successfully!");
-        loadPage("faculty-upcoming-events.html");
-      } else if (res === "unauthorized") {
-        alert("Session expired. Login again.");
-        logout();
-      } else {
-        alert("Failed to create event. Please try again.");
-      }
-    })
-    .catch(err => {
-      console.error("Error:", err);
-      alert("Network error!");
-    });
-  };
+    if (res === "success") {
+      alert("Registered successfully!");
+      loadStudentUpcomingEvents();
+    } else if (res === "already_registered") {
+      alert("You have already registered for this event.");
+    } else if (res === "full") {
+      alert("Event is full.");
+    } else if (res === "session_expired") {
+      alert("Session expired. Login again.");
+      logout();
+    } else {
+      alert("Registration error.");
+    }
+  });
 }
 
-
 // ================================
-// FACULTY UPCOMING EVENTS (EDIT / DELETE)
+// FACULTY UPCOMING EVENTS
 // ================================
 function loadFacultyUpcomingEvents() {
   fetch("/Event_Management_System/FacultyUpcomingEventsServlet")
@@ -229,50 +219,39 @@ function loadFacultyUpcomingEvents() {
 }
 
 // ================================
-// REGISTER EVENT
+// FACULTY REGISTERED STUDENTS (CORRECT WORKING VERSION)
 // ================================
-function registerEvent(eventId) {
-  fetch("/Event_Management_System/RegisterEventServlet", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "eventId=" + eventId
-  })
-  .then(response => response.text())
-  .then(res => {
+function loadRegisteredStudents() {
+  fetch("/Event_Management_System/FacultyRegistrationsServlet")
+    .then(r => r.json())
+    .then(events => {
+      const box = document.getElementById("registeredContainer");
+      box.innerHTML = "";
 
-    res = res.trim(); // remove spaces
+      if (events.length === 0) {
+        box.innerHTML = "<p>No registrations yet</p>";
+        return;
+      }
 
-    if (res === "success") {
-      alert("Registered successfully!");
-      loadStudentUpcomingEvents();
-    }
-
-    else if (res === "already_registered") {
-      alert("You have already registered for this event.");
-    }
-
-    else if (res === "full") {
-      alert("No seats available! The event is full.");
-    }
-
-    else if (res === "session_expired") {
-      alert("Your session expired. Please log in again.");
-      logout();
-    }
-
-    else {
-      alert("An error occurred while registering.");
-    }
-
-  })
-  .catch(err => {
-    console.error("Registration Error:", err);
-    alert("Something went wrong.");
-  });
+      events.forEach(ev => {
+        box.innerHTML += `
+          <div class="faculty-card">
+            <h3>${ev.eventName}</h3>
+            <div class="faculty-details">
+              ${
+                ev.students.length === 0 
+                ? "<p>No students registered</p>"
+                : ev.students.map(s => `<p>${s}</p>`).join("")
+              }
+            </div>
+          </div>
+        `;
+      });
+    });
 }
 
 // ================================
-// EDIT EVENT (SPA SAFE)
+// EDIT EVENT
 // ================================
 function editEvent(id) {
   sessionStorage.setItem("editEventId", id);
@@ -280,13 +259,13 @@ function editEvent(id) {
 }
 
 // ================================
-// INIT EDIT EVENT
+// LOAD EVENT TO EDIT
 // ================================
 function initEditEvent() {
-  const eventId = sessionStorage.getItem("editEventId");
-  if (!eventId) return;
+  const id = sessionStorage.getItem("editEventId");
+  if (!id) return;
 
-  fetch("/Event_Management_System/GetEventByIdServlet?id=" + eventId)
+  fetch("/Event_Management_System/GetEventByIdServlet?id=" + id)
     .then(r => r.json())
     .then(e => {
       const f = document.getElementById("editEventForm");
@@ -301,7 +280,7 @@ function initEditEvent() {
     ev.preventDefault();
 
     const fd = new FormData(ev.target);
-    fd.append("id", eventId);
+    fd.append("id", id);
 
     fetch("/Event_Management_System/UpdateEventServlet", {
       method: "POST",
@@ -319,7 +298,6 @@ function initEditEvent() {
   };
 }
 
-
 // ================================
 // DELETE EVENT
 // ================================
@@ -332,34 +310,6 @@ function deleteEvent(id) {
     body: "eventId=" + id
   })
   .then(() => loadFacultyUpcomingEvents());
-}
-
-// ================================
-// FACULTY → REGISTERED STUDENTS
-// ================================
-function loadRegisteredStudents() {
-  fetch("/Event_Management_System/GetRegisteredStudentsServlet")
-    .then(r => r.json())
-    .then(data => {
-      const box = document.getElementById("registeredContainer");
-      box.innerHTML = "";
-
-      if (data.length === 0) {
-        box.innerHTML = "<p>No registrations yet</p>";
-        return;
-      }
-
-      data.forEach(item => {
-        box.innerHTML += `
-          <div class="faculty-card">
-            <h3>${item.event}</h3>
-            <div class="faculty-details">
-              ${item.students.map(s => `<p>${s}</p>`).join("")}
-            </div>
-          </div>
-        `;
-      });
-    });
 }
 
 // ================================

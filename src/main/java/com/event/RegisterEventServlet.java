@@ -4,21 +4,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import java.io.PrintWriter;
-
+import javax.servlet.http.*;
 
 @WebServlet("/RegisterEventServlet")
-
 @MultipartConfig
 public class RegisterEventServlet extends HttpServlet {
 
@@ -28,12 +19,14 @@ public class RegisterEventServlet extends HttpServlet {
         res.setContentType("text/plain");
 
         HttpSession session = req.getSession(false);
-        if (session == null || session.getAttribute("student") == null) {
+
+        // FIXED SESSION CHECK
+        if (session == null || session.getAttribute("studentEmail") == null) {
             res.getWriter().print("session_expired");
             return;
         }
 
-        String email = (String) session.getAttribute("student");
+        String email = (String) session.getAttribute("studentEmail");
         int eventId = Integer.parseInt(req.getParameter("eventId"));
 
         try (Connection con = DBConnection.getConnection()) {
@@ -70,7 +63,7 @@ public class RegisterEventServlet extends HttpServlet {
             insert.setString(2, email);
             insert.executeUpdate();
 
-            // DECREASE SEATS SAFELY
+            // DECREASE SEATS
             PreparedStatement update = con.prepareStatement(
                 "UPDATE events SET max_participants = max_participants - 1 WHERE id=? AND max_participants > 0"
             );
