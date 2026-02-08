@@ -39,7 +39,7 @@ public class FacultyRegistrationsServlet extends HttpServlet {
             ps.setString(1, facultyEmail);
             ResultSet rs = ps.executeQuery();
 
-            // Map: event_id → event JSON object
+          
             java.util.Map<Integer, JsonObject> map = new java.util.HashMap<>();
 
             while (rs.next()) {
@@ -61,7 +61,7 @@ public class FacultyRegistrationsServlet extends HttpServlet {
                 }
             }
 
-            // Convert to JSON array
+            
             JsonArray output = new JsonArray();
             for (JsonObject obj : map.values()) {
                 output.add(obj);

@@ -24,7 +24,7 @@ public class UpdateEventServlet extends HttpServlet {
         resp.setContentType("text/plain");
 
         try {
-            // Read form parameters
+            
             int id = Integer.parseInt(req.getParameter("id"));
             String name = req.getParameter("name");
             String startDate = req.getParameter("start_date");
@@ -42,7 +42,7 @@ public class UpdateEventServlet extends HttpServlet {
                 return;
             }
 
-            // SQL Update Query
+            
             String sql = "UPDATE events SET name=?, start_date=?, end_date=?, venue=?, max_participants=? WHERE id=?";
 
             PreparedStatement ps = conn.prepareStatement(sql);

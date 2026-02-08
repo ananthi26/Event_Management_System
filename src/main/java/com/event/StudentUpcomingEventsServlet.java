@@ -27,7 +27,7 @@ public class StudentUpcomingEventsServlet extends HttpServlet {
             return;
         }
 
-        // FIXED HERE
+        
         String studentEmail = (String) session.getAttribute("studentEmail");
 
         List<Map<String, Object>> list = new ArrayList<>();

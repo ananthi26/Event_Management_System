@@ -31,7 +31,7 @@ public class RegisterEventServlet extends HttpServlet {
 
         try (Connection con = DBConnection.getConnection()) {
 
-            // CHECK DUPLICATE
+            
             PreparedStatement dup = con.prepareStatement(
                 "SELECT id FROM event_registrations WHERE event_id=? AND student_email=?"
             );
@@ -43,7 +43,7 @@ public class RegisterEventServlet extends HttpServlet {
                 return;
             }
 
-            // CHECK SEATS
+           
             PreparedStatement seat = con.prepareStatement(
                 "SELECT max_participants FROM events WHERE id=?"
             );
@@ -55,7 +55,7 @@ public class RegisterEventServlet extends HttpServlet {
                 return;
             }
 
-            // INSERT REGISTRATION
+           
             PreparedStatement insert = con.prepareStatement(
                 "INSERT INTO event_registrations(event_id, student_email) VALUES (?,?)"
             );
@@ -63,7 +63,7 @@ public class RegisterEventServlet extends HttpServlet {
             insert.setString(2, email);
             insert.executeUpdate();
 
-            // DECREASE SEATS
+           
             PreparedStatement update = con.prepareStatement(
                 "UPDATE events SET max_participants = max_participants - 1 WHERE id=? AND max_participants > 0"
             );

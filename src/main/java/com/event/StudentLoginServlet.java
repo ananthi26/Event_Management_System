@@ -40,16 +40,16 @@ public class StudentLoginServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                // Login SUCCESS
+                
                 HttpSession session = r.getSession(true);
                 session.setAttribute("studentEmail", email);
                 session.setAttribute("studentId", rs.getInt("id")); // useful later
                 session.setMaxInactiveInterval(30 * 60);
 
                 s.getWriter().print("success");
-                return; // VERY IMPORTANT
+                return; 
             } else {
-                // Login FAIL
+                
                 s.getWriter().print("fail");
                 return;
             }
