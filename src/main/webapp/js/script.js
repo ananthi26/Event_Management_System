@@ -188,6 +188,7 @@ function loadStudentUpcomingEvents() {
       }
 
       events.forEach(e => {
+        // Make sure each card uses your event-card class
         box.innerHTML += `
           <div class="event-card">
             <h3>${e.name}</h3>
@@ -206,6 +207,7 @@ function loadStudentUpcomingEvents() {
       });
     });
 }
+
 
 // ================================
 // REGISTER EVENT

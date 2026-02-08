@@ -22,27 +22,26 @@ public class StudentUpcomingEventsServlet extends HttpServlet {
         res.setContentType("application/json");
 
         HttpSession session = req.getSession(false);
-        if (session == null) {
+        if (session == null || session.getAttribute("studentEmail") == null) {
             res.sendError(401);
             return;
         }
 
-        
         String studentEmail = (String) session.getAttribute("studentEmail");
-
         List<Map<String, Object>> list = new ArrayList<>();
 
         try (Connection con = DBConnection.getConnection()) {
 
+            
             PreparedStatement ps = con.prepareStatement(
                 "SELECT e.*, " +
-                "(SELECT COUNT(*) FROM event_registrations r " +
-                " WHERE r.event_id = e.id AND r.student_email = ?) AS registered " +
-                "FROM events e WHERE e.end_date >= CURDATE()"
+                " (SELECT COUNT(*) FROM event_registrations r WHERE r.event_id = e.id) AS registered_count, " +
+                " (SELECT COUNT(*) FROM event_registrations r WHERE r.event_id = e.id AND r.student_email = ?) AS registered_for_you " +
+                "FROM events e " +
+                "WHERE e.end_date >= CURDATE()"
             );
-            
-            ps.setString(1, studentEmail);
 
+            ps.setString(1, studentEmail);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -52,8 +51,14 @@ public class StudentUpcomingEventsServlet extends HttpServlet {
                 map.put("start", rs.getDate("start_date"));
                 map.put("end", rs.getDate("end_date"));
                 map.put("venue", rs.getString("venue"));
-                map.put("seats", rs.getInt("max_participants"));
-                map.put("registered", rs.getInt("registered") > 0);
+
+               
+                int seatsLeft = rs.getInt("max_participants") - rs.getInt("registered_count");
+                map.put("seats", seatsLeft < 0 ? 0 : seatsLeft);
+
+                
+                map.put("registered", rs.getInt("registered_for_you") > 0);
+
                 list.add(map);
             }
 

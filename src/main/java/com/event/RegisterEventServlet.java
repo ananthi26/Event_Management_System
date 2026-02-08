@@ -20,7 +20,7 @@ public class RegisterEventServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
 
-        // FIXED SESSION CHECK
+        
         if (session == null || session.getAttribute("studentEmail") == null) {
             res.getWriter().print("session_expired");
             return;
@@ -43,33 +43,44 @@ public class RegisterEventServlet extends HttpServlet {
                 return;
             }
 
-           
-            PreparedStatement seat = con.prepareStatement(
+            
+            PreparedStatement maxStmt = con.prepareStatement(
                 "SELECT max_participants FROM events WHERE id=?"
             );
-            seat.setInt(1, eventId);
-            ResultSet rs = seat.executeQuery();
+            maxStmt.setInt(1, eventId);
+            ResultSet rs = maxStmt.executeQuery();
 
-            if (!rs.next() || rs.getInt(1) <= 0) {
+            if (!rs.next()) {
+                res.getWriter().print("error");
+                return;
+            }
+
+            int maxParticipants = rs.getInt("max_participants");
+
+            PreparedStatement countStmt = con.prepareStatement(
+                "SELECT COUNT(*) FROM event_registrations WHERE event_id=?"
+            );
+            countStmt.setInt(1, eventId);
+            ResultSet countRs = countStmt.executeQuery();
+            int registered = 0;
+            if (countRs.next()) {
+                registered = countRs.getInt(1);
+            }
+
+           
+            if (registered >= maxParticipants) {
                 res.getWriter().print("full");
                 return;
             }
 
-           
             PreparedStatement insert = con.prepareStatement(
-                "INSERT INTO event_registrations(event_id, student_email) VALUES (?,?)"
+                "INSERT INTO event_registrations(event_id, student_email) VALUES (?, ?)"
             );
             insert.setInt(1, eventId);
             insert.setString(2, email);
             insert.executeUpdate();
 
            
-            PreparedStatement update = con.prepareStatement(
-                "UPDATE events SET max_participants = max_participants - 1 WHERE id=? AND max_participants > 0"
-            );
-            update.setInt(1, eventId);
-            update.executeUpdate();
-
             res.getWriter().print("success");
 
         } catch (Exception e) {
