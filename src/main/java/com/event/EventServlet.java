@@ -20,7 +20,7 @@ public class EventServlet extends HttpServlet {
 
         response.setContentType("text/plain");
 
-        System.out.println("========== EventServlet START ==========");
+       
 
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -30,7 +30,7 @@ public class EventServlet extends HttpServlet {
         }
 
         Object faculty = session.getAttribute("facultyEmail");
-        System.out.println("SESSION facultyEmail = " + faculty);
+       
 
         if (faculty == null) {
             response.getWriter().print("unauthorized");
@@ -48,7 +48,7 @@ public class EventServlet extends HttpServlet {
         if (name == null || startDate == null || endDate == null ||
             venue == null || type == null || organizer == null || maxStr == null) {
 
-            System.out.println("❌ ONE OR MORE PARAMETERS ARE NULL");
+            System.out.println("ONE OR MORE PARAMETERS ARE NULL");
             response.getWriter().print("error");
             return;
         }
@@ -57,8 +57,7 @@ public class EventServlet extends HttpServlet {
             int max = Integer.parseInt(maxStr);
 
             Connection con = DBConnection.getConnection();
-            System.out.println("DB CONNECTION = " + con);
-
+           
             PreparedStatement ps = con.prepareStatement(
                 "INSERT INTO events (name, start_date, end_date, venue, type, organizer, max_participants) VALUES (?,?,?,?,?,?,?)"
             );
@@ -72,16 +71,15 @@ public class EventServlet extends HttpServlet {
             ps.setInt(7, max);
 
             int rows = ps.executeUpdate();
-            System.out.println("ROWS INSERTED = " + rows);
+            
 
             response.getWriter().print("success");
 
         } catch (Exception e) {
-            System.out.println("❌ EXCEPTION OCCURRED");
+            System.out.println("EXCEPTION OCCURRED");
             e.printStackTrace();
             response.getWriter().print("error");
         }
 
-        System.out.println("========== EventServlet END ==========");
     }
 }
